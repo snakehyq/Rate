@@ -10,18 +10,21 @@
       :style="{'fontSize': size + 'px'}"
       @click="setStarNum(item)"
     ></span>
+    <span v-show="showText" class="show-text">{{ startText }}</span>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue'
 import { basicProps } from '../config/props'
 import { useStars } from '../hooks/index'
 const props = defineProps(basicProps)
 const emits = defineEmits(['change', 'update:modelValue'])
-const [starNum, setStarNum] = useStars(props.modelValue, (num: number) => {
+const [starNum, startText, setStarNum] = useStars(props, callback)
+function callback (num: number) {
   emits('change', num)
   emits('update:modelValue', num)
-})
+}
 </script>
 
 <style lang="less" scoped>
@@ -55,5 +58,13 @@ const [starNum, setStarNum] = useStars(props.modelValue, (num: number) => {
     &.icon-star:before {
       content: "\e693";
     }
+}
+.stars {
+  display: flex;
+  align-items: center;
+  .show-text {
+    margin-left: 12px;
+    color: #1f2d3d;
+  }
 }
 </style>

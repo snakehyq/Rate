@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-   <Star v-model="starModel" :max="max" size="30" @change="starChange"></Star>
+   <Star v-model="starModel" :max="max" size="30" @change="starChange" show-text></Star>
   </div>
 </template>
 

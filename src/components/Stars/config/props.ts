@@ -1,6 +1,14 @@
 import { PropType } from 'vue'
 
 export const basicProps = {
+  texts: {
+    type: Array as PropType<string[]>,
+    default: ['极差', '失望', '一般', '满意', '惊喜']
+  },
+  showText: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
   modelValue: {
     type: Number as PropType<number>,
     default: 0
