@@ -1,6 +1,10 @@
 import { PropType } from 'vue'
 
 export const basicProps = {
+  textColor: {
+    type: String as PropType<string>,
+    default: '1f2d3d'
+  },
   texts: {
     type: Array as PropType<string[]>,
     default: ['极差', '失望', '一般', '满意', '惊喜']

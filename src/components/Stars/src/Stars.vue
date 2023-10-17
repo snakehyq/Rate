@@ -10,7 +10,7 @@
       :style="{'fontSize': size + 'px'}"
       @click="setStarNum(item)"
     ></span>
-    <span v-show="showText" class="show-text">{{ startText }}</span>
+    <span v-show="showText" class="show-text" :style="{color: textColor}">{{ startText }}</span>
   </div>
 </template>
 
