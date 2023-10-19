@@ -5,7 +5,8 @@
       :key="index"
       :class="[
         'iconfont icon-star',
-        item <= starNum ? 'icon-star-active' : ''
+        item <= starNum ? 'icon-star-active' : '',
+        disabled ? '' : 'icon-hover',
       ]"
       :style="{'fontSize': size + 'px'}"
       @click="setStarNum(item)"
@@ -37,7 +38,9 @@ function callback (num: number) {
     url("//at.alicdn.com/t/c/font_4111710_8whpadev4vl.ttf?t=1697524516024")
       format("truetype");
 }
-
+.icon-hover:hover{
+        font-size: 32px !important;
+  }
 .iconfont {
   font-family: "iconfont" !important;
   font-size: 16px;
@@ -45,9 +48,6 @@ function callback (num: number) {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #999;
-  &:hover {
-        font-size: 32px !important;
-      }
   cursor: pointer;
     &.icon-star {
       transition: color .3s;

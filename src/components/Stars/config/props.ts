@@ -1,6 +1,10 @@
 import { PropType } from 'vue'
 
 export const basicProps = {
+  disabled: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
   textColor: {
     type: String as PropType<string>,
     default: '1f2d3d'
