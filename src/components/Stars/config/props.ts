@@ -13,7 +13,7 @@ export const basicProps = {
     type: String as PropType<string>,
     default: '#C6D1DE'
   },
-  iconClasse: {
+  iconClass: {
     type: String as PropType<string>,
     default: 'icon-star'
   },

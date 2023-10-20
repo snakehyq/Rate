@@ -5,7 +5,7 @@
       :key="index"
       :class="[
         'iconfont',
-        iconClasse,
+        iconClass,
         item <= starNum ? 'icon-star-active' : '',
         disabled ? '' : 'icon-hover',
         disabled && item > starNum ? 'icon-disabled-void-color' : ''
