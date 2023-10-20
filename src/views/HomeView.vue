@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-   <Star v-model="starModel" disabled void-color="#C6D1DE" icon-classe="icon-face" :max="5" size="30" text-color="#ff9900" show-text show-score @change="starChange"></Star>
+   <Star v-model="starModel" disabled score-template="{value}分" void-color="#C6D1DE" icon-classe="icon-face" :max="5" size="30" text-color="#ff9900" show-text show-score @change="starChange"></Star>
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { Star } from '@/components/Stars'
 import { ref } from 'vue'
 const disabled = true
-const starModel = ref(2)
+const starModel = ref(1)
 function starChange (num: number) {
   console.log(num, starModel)
 }

@@ -1,6 +1,10 @@
 import { PropType } from 'vue'
 
 export const basicProps = {
+  scoreTemplate: {
+    type: String as PropType<string>,
+    default: '{value}'
+  },
   disabledVoidColor: {
     type: String as PropType<string>,
     default: '#EFF2F7'
