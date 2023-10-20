@@ -11,7 +11,8 @@
       :style="{'fontSize': size + 'px'}"
       @click="setStarNum(item)"
     ></span>
-    <span v-show="showText" class="show-text" :style="{color: textColor}">{{ startText }}</span>
+    <span v-if="showScore" class="show-text" :style="{color: textColor}">{{ startScore }}</span>
+    <span v-else-if="showText" class="show-text" :style="{color: textColor}">{{ startText }}</span>
   </div>
 </template>
 
@@ -21,7 +22,7 @@ import { basicProps } from '../config/props'
 import { useStars } from '../hooks/index'
 const props = defineProps(basicProps)
 const emits = defineEmits(['change', 'update:modelValue'])
-const [starNum, startText, setStarNum] = useStars(props, callback)
+const [starNum, startText, startScore, setStarNum] = useStars(props, callback)
 function callback (num: number) {
   emits('change', num)
   emits('update:modelValue', num)

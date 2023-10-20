@@ -17,6 +17,10 @@ export const basicProps = {
     type: Boolean as PropType<boolean>,
     default: false
   },
+  showScore: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
   modelValue: {
     type: Number as PropType<number>,
     default: 0
