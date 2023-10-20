@@ -4,11 +4,12 @@
       v-for="(item,index) in max"
       :key="index"
       :class="[
-        'iconfont icon-star',
+        'iconfont',
+        iconClasse,
         item <= starNum ? 'icon-star-active' : '',
         disabled ? '' : 'icon-hover',
+        disabled && item > starNum ? 'icon-disabled-void-color' : ''
       ]"
-      :style="{'fontSize': size + 'px'}"
       @click="setStarNum(item)"
     ></span>
     <span v-if="showScore" class="show-text" :style="{color: textColor}">{{ startScore }}</span>
@@ -17,7 +18,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { basicProps } from '../config/props'
 import { useStars } from '../hooks/index'
 const props = defineProps(basicProps)
@@ -27,28 +28,29 @@ function callback (num: number) {
   emits('change', num)
   emits('update:modelValue', num)
 }
+const fontSize = computed(() => {
+  return props.size + 'px'
+})
 </script>
 
 <style lang="less" scoped>
 @font-face {
   font-family: "iconfont"; /* Project id 4111710 */
-  src: url("//at.alicdn.com/t/c/font_4111710_8whpadev4vl.woff2?t=1697524516024")
-      format("woff2"),
-    url("//at.alicdn.com/t/c/font_4111710_8whpadev4vl.woff?t=1697524516024")
-      format("woff"),
-    url("//at.alicdn.com/t/c/font_4111710_8whpadev4vl.ttf?t=1697524516024")
-      format("truetype");
+  src: url('//at.alicdn.com/t/c/font_4111710_tfu4xz6dkss.woff2?t=1697783650703') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4111710_tfu4xz6dkss.woff?t=1697783650703') format('woff'),
+       url('//at.alicdn.com/t/c/font_4111710_tfu4xz6dkss.ttf?t=1697783650703') format('truetype');
 }
 .icon-hover:hover{
-        font-size: 32px !important;
-  }
+    font-size: 32px;
+}
 .iconfont {
   font-family: "iconfont" !important;
   font-size: 16px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #999;
+  color: v-bind(voidColor);
+  font-size: v-bind(fontSize);
   cursor: pointer;
     &.icon-star {
       transition: color .3s;
@@ -58,6 +60,12 @@ function callback (num: number) {
     }
     &.icon-star:before {
       content: "\e693";
+    }
+    &.icon-face:before {
+      content: "\e6ae";
+    }
+    &.icon-disabled-void-color {
+      color: v-bind(disabledVoidColor);
     }
 }
 .stars {

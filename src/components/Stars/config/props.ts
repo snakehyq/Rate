@@ -1,6 +1,18 @@
 import { PropType } from 'vue'
 
 export const basicProps = {
+  disabledVoidColor: {
+    type: String as PropType<string>,
+    default: '#EFF2F7'
+  },
+  voidColor: {
+    type: String as PropType<string>,
+    default: '#C6D1DE'
+  },
+  iconClasse: {
+    type: String as PropType<string>,
+    default: 'icon-star'
+  },
   disabled: {
     type: Boolean as PropType<boolean>,
     default: false
