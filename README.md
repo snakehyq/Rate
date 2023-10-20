@@ -53,7 +53,7 @@ function starChange (num: number) {
 
 ```
 
-![image-20231020153707951](https://github.com/snakehyq/areaSelect/blob/master/public/static/img/image-20231020153707951.png)
+![image-20231020153707951](https://github.com/snakehyq/Rate/tree/master/src/assets/image-20231020153707951.png)
 
 #### 属性
 
