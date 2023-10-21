@@ -19,14 +19,15 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { basicProps } from '../config/props'
+import { basicProps, Emits } from '../config/props'
 import { useStars } from '../hooks/index'
+import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '@/constants/'
 const props = defineProps(basicProps)
-const emits = defineEmits(['change', 'update:modelValue'])
+const emits = defineEmits(Emits)
 const [starNum, startText, startScore, setStarNum] = useStars(props, callback)
 function callback (num: number) {
-  emits('change', num)
-  emits('update:modelValue', num)
+  emits(CHANGE_EVENT, num)
+  emits(UPDATE_MODEL_EVENT, num)
 }
 const fontSize = computed(() => {
   return props.size + 'px'

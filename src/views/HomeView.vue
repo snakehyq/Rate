@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-   <Star v-model="starModel" disabled score-template="{value}分" void-color="#C6D1DE" icon-class="icon-face" :max="5" size="30" text-color="#ff9900" show-text show-score @change="starChange"></Star>
+   <Star v-model="starModel" score-template="{value}分" void-color="#C6D1DE" icon-class="icon-face" :max="5" size="30" text-color="#ff9900" show-text show-score @change="starChange"></Star>
   </div>
 </template>
 

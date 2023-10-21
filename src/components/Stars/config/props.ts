@@ -1,3 +1,5 @@
+import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '@/constants/'
+import { isNumber } from '@/utils/types'
 import { PropType } from 'vue'
 
 export const basicProps = {
@@ -50,3 +52,10 @@ export const basicProps = {
     default: '16'
   }
 }
+export type basicPropsType = typeof basicProps
+
+export const Emits = {
+  [CHANGE_EVENT]: (value: number) => isNumber(value),
+  [UPDATE_MODEL_EVENT]: (value: number) => isNumber(value)
+}
+export type EmitsType = typeof Emits
