@@ -1,8 +1,14 @@
 import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '@/constants/'
+import { definePropType } from '@/types/props'
 import { isNumber } from '@/utils/types'
-import { PropType } from 'vue'
+import { mutable } from '@/utils/typeScripts'
+import { PropType, ExtractPropTypes } from 'vue'
 
 export const basicProps = {
+  colors: {
+    type: definePropType<string[] | Record<string, unknown>>([Array, Object]),
+    default: () => mutable(['', '', ''] as const)
+  },
   scoreTemplate: {
     type: String as PropType<string>,
     default: '{value}'
@@ -28,8 +34,8 @@ export const basicProps = {
     default: '1f2d3d'
   },
   texts: {
-    type: Array as PropType<string[]>,
-    default: ['极差', '失望', '一般', '满意', '惊喜']
+    type: definePropType<string []>(Array),
+    default: mutable(['极差', '失望', '一般', '满意', '惊喜'] as const)
   },
   showText: {
     type: Boolean as PropType<boolean>,
@@ -52,7 +58,7 @@ export const basicProps = {
     default: '16'
   }
 }
-export type basicPropsType = typeof basicProps
+export type basicPropsType = ExtractPropTypes<typeof basicProps>
 
 export const Emits = {
   [CHANGE_EVENT]: (value: number) => isNumber(value),

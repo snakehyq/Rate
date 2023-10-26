@@ -1,10 +1,11 @@
 import { ref } from 'vue'
+import { basicPropsType } from '../config/props'
 
-export const useStars = (props: any, callback: (num: number) => void) => {
+export const useStars = (props: basicPropsType, callback: (num: number) => void) => {
   const { modelValue, texts, disabled, scoreTemplate } = props
   const starNum = ref(modelValue)
   const startText = ref(texts[modelValue - 1])
-  const startScore = ref(modelValue)
+  const startScore = ref<unknown>(modelValue)
   let template = ''
   const reg = /^\{value\}/
   if (reg.test(scoreTemplate)) {
