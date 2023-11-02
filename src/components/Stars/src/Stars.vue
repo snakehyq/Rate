@@ -1,48 +1,120 @@
 <template>
   <div class="stars">
-    <span
-      v-for="(item,index) in max"
-      :key="index"
-      :class="[
-        'iconfont',
-        iconClass,
-        item <= starNum ? 'icon-star-active' : '',
-        disabled ? '' : 'icon-hover',
-        disabled && item > starNum ? 'icon-disabled-void-color' : ''
-      ]"
-      @click="setStarNum(item)"
-    ></span>
-    <span v-if="showScore" class="show-text" :style="{color: textColor}">{{ startScore }}</span>
-    <span v-else-if="showText" class="show-text" :style="{color: textColor}">{{ startText }}</span>
+    <span v-for="(item, index) in max" :key="index" :class="['iconfont']">
+      <i
+        class="iconfont"
+        :class="[classes[item - 1]]"
+        :style="getIconStyle(item)"
+      >
+      </i>
+    </span>
+    <span class="el-rate__text">text</span>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, Ref, ref, toRaw, watch } from 'vue'
 import { basicProps, Emits } from '../config/props'
 import { useStars } from '../hooks/index'
 import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '@/constants/'
+import { isObject } from '@/utils/types'
 const props = defineProps(basicProps)
 const emits = defineEmits(Emits)
-const [starNum, startText, startScore, setStarNum] = useStars(props, callback)
-function callback (num: number) {
-  emits(CHANGE_EVENT, num)
-  emits(UPDATE_MODEL_EVENT, num)
-}
-const fontSize = computed(() => {
-  return props.size + 'px'
+const currentValue = ref(props.modelValue)
+const classes = computed(() => {
+  const result = []
+  let i = 0
+  // 基于当前选中值 作为阈值
+  const threshold = currentValue.value
+  // 半选逻辑 ...
+  // 选中状态
+  for (; i < threshold; i++) {
+    result.push(activeClass.value)
+  }
+  // 未选中状态
+  for (; i < props.max; i++) {
+    result.push(voidClass.value)
+  }
+  console.log(result)
+  return result
 })
+
+const activeClass = computed(() => {
+  return getValueFromMap(currentValue.value, arrayToObject(props.icons))
+})
+
+// 未选中 icon 的类名  不同模式下：只读模式/可选
+const voidClass = computed(() => {
+  return rateDisabled.value ? props.disabledVoidIcon : props.voidIcon
+})
+// 是否为只读
+const rateDisabled = computed(() => {
+  return props.disabled
+})
+
+const activeColor = computed(() => {
+  return getValueFromMap(currentValue.value, arrayToObject(props.colors))
+})
+
+const arrayToObject = (_arr: any[] | Record<string, unknown>) => {
+  return Array.isArray(_arr)
+    ? {
+        [props.lowThreshold]: _arr[0],
+        [props.highThreshold]: { value: _arr[1], excluded: true },
+        [props.max]: _arr[2]
+      }
+    : _arr
+}
+
+function getValueFromMap (value: number, map: Record<number, unknown>) {
+  const matchedKeys = Object.keys(map)
+    .map((_) => +_)
+    .filter((key) => {
+      const val = map[key]
+      // 区间最大值是否包含  true 不包括  false 包括
+      const excluded = isObject(val) ? val.excluded : false
+      return excluded ? value < key : value <= key
+      // value <= lowThreshold  matchedKeys =  [lowThreshold, highThreshold, max]
+      // value > lowThreshold && value < highThreshold matchedKeys =  [highThreshold, max]
+      // value > highThreshold && value <= max    matchedKeys =  [ max]
+    })
+    .sort((a, b) => a - b) // 排序 从小到大
+
+  // 获取最小配置
+  const matchedValue = map[matchedKeys[0]]
+  // 根据类型获取值
+  return isObject(matchedValue) ? matchedValue.value : matchedValue || ''
+}
+
+function getIconStyle (item: number) {
+  const voidColor = rateDisabled.value
+    ? props.disabledVoidColor
+    : props.voidColor
+  return {
+    color: item <= currentValue.value ? activeColor.value : voidColor
+  }
+}
+
+watch(
+  () => props.modelValue,
+  (newVal, oldVal) => {
+    currentValue.value = newVal
+  }
+)
 </script>
 
 <style lang="less" scoped>
 @font-face {
   font-family: "iconfont"; /* Project id 4111710 */
-  src: url('//at.alicdn.com/t/c/font_4111710_tfu4xz6dkss.woff2?t=1697783650703') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4111710_tfu4xz6dkss.woff?t=1697783650703') format('woff'),
-       url('//at.alicdn.com/t/c/font_4111710_tfu4xz6dkss.ttf?t=1697783650703') format('truetype');
+  src: url("//at.alicdn.com/t/c/font_4111710_nvtul6we3jg.woff2?t=1698917543250")
+      format("woff2"),
+    url("//at.alicdn.com/t/c/font_4111710_nvtul6we3jg.woff?t=1698917543250")
+      format("woff"),
+    url("//at.alicdn.com/t/c/font_4111710_nvtul6we3jg.ttf?t=1698917543250")
+      format("truetype");
 }
-.icon-hover:hover{
-    font-size: 32px;
+.icon-hover:hover {
+  font-size: 32px;
 }
 .iconfont {
   font-family: "iconfont" !important;
@@ -50,24 +122,50 @@ const fontSize = computed(() => {
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: v-bind(voidColor);
-  font-size: v-bind(fontSize);
   cursor: pointer;
-    &.icon-star {
-      transition: color .3s;
-    }
-    &.icon-star-active {
-      color: #fbab06;
-    }
-    &.icon-star:before {
-      content: "\e693";
-    }
-    &.icon-face:before {
-      content: "\e6ae";
-    }
-    &.icon-disabled-void-color {
-      color: v-bind(disabledVoidColor);
-    }
+
+  &.icon-view:before {
+    content: "\e62d";
+  }
+
+  &.icon-taiji:before {
+    content: "\e6b8";
+  }
+
+  &.icon-mok:before {
+    content: "\e63b";
+  }
+
+  &.icon-info:before {
+    content: "\e63d";
+  }
+
+  &.icon-shit:before {
+    content: "\e607";
+  }
+
+  &.icon-lock:before {
+    content: "\e639";
+  }
+
+  &.icon-map:before {
+    content: "\e637";
+  }
+
+  &.icon-setting:before {
+    content: "\e602";
+  }
+
+  &.icon-love:before {
+    content: "\e618";
+  }
+
+  &.icon-face:before {
+    content: "\e6ae";
+  }
+  &.icon-star:before {
+  content: "\e693";
+}
 }
 .stars {
   display: flex;

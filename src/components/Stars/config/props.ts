@@ -1,4 +1,5 @@
 import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '@/constants/'
+import { componentSizes } from '@/constants/size'
 import { definePropType } from '@/types/props'
 import { isNumber } from '@/utils/types'
 import { mutable } from '@/utils/typeScripts'
@@ -7,7 +8,11 @@ import { PropType, ExtractPropTypes } from 'vue'
 export const basicProps = {
   colors: {
     type: definePropType<string[] | Record<string, unknown>>([Array, Object]),
-    default: () => mutable(['', '', ''] as const)
+    default: () => mutable(['#F7BA2A', '#F7BA2A', '#F7BA2A'] as const)
+  },
+  icons: {
+    type: definePropType<string[]| Record<number, string>>([Array, Object]),
+    default: () => mutable(['icon-star', 'icon-face', 'icon-love'])
   },
   scoreTemplate: {
     type: String as PropType<string>,
@@ -21,10 +26,18 @@ export const basicProps = {
     type: String as PropType<string>,
     default: '#C6D1DE'
   },
-  iconClass: {
+  disabledVoidIcon: {
     type: String as PropType<string>,
-    default: 'icon-star'
+    default: () => 'icon-love'
   },
+  voidIcon: {
+    type: String as PropType<string>,
+    default: () => 'icon-love'
+  },
+  // iconClass: {
+  //   type: String as PropType<string>,
+  //   default: 'icon-star'
+  // },
   disabled: {
     type: Boolean as PropType<boolean>,
     default: false
@@ -53,9 +66,17 @@ export const basicProps = {
     type: Number as PropType<number>,
     default: 5
   },
+  lowThreshold: {
+    type: Number as PropType<number>,
+    default: 2
+  },
+  highThreshold: {
+    type: Number as PropType<number>,
+    default: 4
+  },
   size: {
     type: String as PropType<string>,
-    default: '16'
+    values: componentSizes
   }
 }
 export type basicPropsType = ExtractPropTypes<typeof basicProps>
