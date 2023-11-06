@@ -91,7 +91,8 @@ function getIconStyle (item: number) {
     ? props.disabledVoidColor
     : props.voidColor
   return {
-    color: item <= currentValue.value ? activeColor.value : voidColor
+    color: item <= currentValue.value ? activeColor.value : voidColor,
+    fontSize: props.size
   }
 }
 
