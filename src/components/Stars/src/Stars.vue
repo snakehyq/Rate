@@ -2,10 +2,17 @@
   <div class="stars">
     <span v-for="(item, index) in max" :key="index" :class="['iconfont']">
       <i
-        class="iconfont"
-        :class="[classes[item - 1]]"
+        class="iconfont el-rate__icon"
+        :class="[ !showDecimalIcon(item) && classes[item - 1]]"
         :style="getIconStyle(item)"
       >
+        <i
+          class="iconfont el-rate__icon el-rate__decimal"
+          v-if="showDecimalIcon(item)"
+          :class="decimalIconClass"
+          :style="decimalStyle"
+        >
+        </i>
       </i>
     </span>
     <span class="el-rate__text">text</span>
@@ -21,6 +28,7 @@ import { isObject } from '@/utils/types'
 const props = defineProps(basicProps)
 const emits = defineEmits(Emits)
 const currentValue = ref(props.modelValue)
+const pointerAtLeftHalf = ref(true)
 const classes = computed(() => {
   const result = []
   let i = 0
@@ -43,6 +51,10 @@ const activeClass = computed(() => {
   return getValueFromMap(currentValue.value, arrayToObject(props.icons))
 })
 
+const decimalIconClass = computed(() => {
+  return getValueFromMap(currentValue.value, arrayToObject(props.icons))
+})
+
 // 未选中 icon 的类名  不同模式下：只读模式/可选
 const voidClass = computed(() => {
   return rateDisabled.value ? props.disabledVoidIcon : props.voidIcon
@@ -54,6 +66,25 @@ const rateDisabled = computed(() => {
 
 const activeColor = computed(() => {
   return getValueFromMap(currentValue.value, arrayToObject(props.colors))
+})
+
+//  当前值百分比  3.2 => 20(%)
+const valueDecimal = computed(() => {
+  return currentValue.value * 100 - Math.floor(currentValue.value) * 100
+})
+
+// 半选样式
+const decimalStyle = computed(() => {
+  let width = ''
+  if (rateDisabled.value) {
+    width = `${valueDecimal.value}%`
+  } else if (props.allowHalf) {
+    width = '50%'
+  }
+  return {
+    color: activeColor.value,
+    width
+  }
 })
 
 const arrayToObject = (_arr: any[] | Record<string, unknown>) => {
@@ -86,6 +117,14 @@ function getValueFromMap (value: number, map: Record<number, unknown>) {
   return isObject(matchedValue) ? matchedValue.value : matchedValue || ''
 }
 
+function showDecimalIcon (item: number) {
+  const showHenDisabled = rateDisabled.value && valueDecimal.value > 0 &&
+  item - 1 < currentValue.value && currentValue.value < item
+  const showHenAllowHalf = props.allowHalf && pointerAtLeftHalf.value && item - 0.5 <= currentValue.value &&
+  currentValue.value < item
+  return showHenDisabled || showHenAllowHalf
+}
+
 function getIconStyle (item: number) {
   const voidColor = rateDisabled.value
     ? props.disabledVoidColor
@@ -100,6 +139,7 @@ watch(
   () => props.modelValue,
   (newVal, oldVal) => {
     currentValue.value = newVal
+    pointerAtLeftHalf.value = newVal !== Math.floor(newVal)
   }
 )
 </script>
@@ -113,6 +153,14 @@ watch(
       format("woff"),
     url("//at.alicdn.com/t/c/font_4111710_nvtul6we3jg.ttf?t=1698917543250")
       format("truetype");
+}
+
+.el-rate__decimal {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    display: inline-block;
+    overflow: hidden;
 }
 .icon-hover:hover {
   font-size: 32px;
@@ -165,12 +213,16 @@ watch(
     content: "\e6ae";
   }
   &.icon-star:before {
-  content: "\e693";
-}
+    content: "\e693";
+  }
 }
 .stars {
   display: flex;
   align-items: center;
+  .el-rate__icon {
+  position: relative;
+  display: inline-block;
+}
   .show-text {
     margin-left: 12px;
     color: #1f2d3d;

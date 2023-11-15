@@ -42,6 +42,10 @@ export const basicProps = {
     type: Boolean as PropType<boolean>,
     default: false
   },
+  allowHalf: {
+    type: Boolean as PropType<boolean>,
+    default: false
+  },
   textColor: {
     type: String as PropType<string>,
     default: '1f2d3d'
