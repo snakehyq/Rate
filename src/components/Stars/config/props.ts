@@ -32,7 +32,7 @@ export const basicProps = {
   },
   voidIcon: {
     type: String as PropType<string>,
-    default: () => 'icon-love'
+    default: () => 'icon-setting'
   },
   // iconClass: {
   //   type: String as PropType<string>,

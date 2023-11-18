@@ -1,9 +1,16 @@
 <template>
   <div class="stars">
-    <span v-for="(item, index) in max" :key="index" :class="['iconfont']">
+    <span
+      v-for="(item, index) in max"
+      :key="index"
+      :class="['iconfont', 'el-rate__item', hoverIndex == item ? 'el-item__transform': '']"
+      :style="{ cursor: rateDisabled ? 'auto' : 'pointer' }"
+      @mousemove="setCurrentValue(item, $event)"
+      @mouseleave="resetCurrentValue"
+    >
       <i
         class="iconfont el-rate__icon"
-        :class="[ !showDecimalIcon(item) && classes[item - 1]]"
+        :class="[!showDecimalIcon(item) && classes[item - 1]]"
         :style="getIconStyle(item)"
       >
         <i
@@ -20,15 +27,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, Ref, ref, toRaw, watch } from 'vue'
+import { computed, Events, Ref, ref, toRaw, watch } from 'vue'
 import { basicProps, Emits } from '../config/props'
 import { useStars } from '../hooks/index'
 import { CHANGE_EVENT, UPDATE_MODEL_EVENT } from '@/constants/'
-import { isObject } from '@/utils/types'
+import { hasClass, isObject } from '@/utils/types'
 const props = defineProps(basicProps)
 const emits = defineEmits(Emits)
 const currentValue = ref(props.modelValue)
 const pointerAtLeftHalf = ref(true)
+const hoverIndex = ref(-1)
 const classes = computed(() => {
   const result = []
   let i = 0
@@ -83,7 +91,8 @@ const decimalStyle = computed(() => {
   }
   return {
     color: activeColor.value,
-    width
+    width,
+    fontSize: props.size
   }
 })
 
@@ -113,15 +122,22 @@ function getValueFromMap (value: number, map: Record<number, unknown>) {
 
   // 获取最小配置
   const matchedValue = map[matchedKeys[0]]
+  console.log('matchedValue', matchedValue)
   // 根据类型获取值
   return isObject(matchedValue) ? matchedValue.value : matchedValue || ''
 }
 
 function showDecimalIcon (item: number) {
-  const showHenDisabled = rateDisabled.value && valueDecimal.value > 0 &&
-  item - 1 < currentValue.value && currentValue.value < item
-  const showHenAllowHalf = props.allowHalf && pointerAtLeftHalf.value && item - 0.5 <= currentValue.value &&
-  currentValue.value < item
+  const showHenDisabled =
+    rateDisabled.value &&
+    valueDecimal.value > 0 &&
+    item - 1 < props.modelValue &&
+    props.modelValue < item
+  const showHenAllowHalf =
+    props.allowHalf &&
+    pointerAtLeftHalf.value &&
+    item - 0.5 <= currentValue.value &&
+    currentValue.value < item
   return showHenDisabled || showHenAllowHalf
 }
 
@@ -133,6 +149,36 @@ function getIconStyle (item: number) {
     color: item <= currentValue.value ? activeColor.value : voidColor,
     fontSize: props.size
   }
+}
+
+function resetCurrentValue (e: MouseEvent) {
+  if (rateDisabled.value) return
+  if (props.allowHalf) {
+    pointerAtLeftHalf.value = props.modelValue !== Math.floor(props.modelValue)
+  }
+  currentValue.value = props.modelValue
+  hoverIndex.value = -1
+}
+
+function setCurrentValue (item: number, e: MouseEvent) {
+  if (rateDisabled.value) {
+    return
+  }
+  if (props.allowHalf) {
+    let target = e.target as any
+    if (hasClass(target, 'el-rate__item')) {
+      target = target.querySelector('.el-rate__icon')
+    }
+    if (hasClass(target, 'el-rate__decimal')) {
+      target = target.parentNode
+    }
+    pointerAtLeftHalf.value = e.offsetX * 2 <= target.clientWidth
+    currentValue.value = pointerAtLeftHalf.value ? item - 0.5 : item
+    console.log('target', target.className)
+  } else {
+    currentValue.value = item
+  }
+  hoverIndex.value = item
 }
 
 watch(
@@ -154,13 +200,18 @@ watch(
     url("//at.alicdn.com/t/c/font_4111710_nvtul6we3jg.ttf?t=1698917543250")
       format("truetype");
 }
-
+.el-rate__item {
+    padding-right: 6px;
+}
 .el-rate__decimal {
-    position: absolute;
-    top: 0px;
-    left: 0;
-    display: inline-block;
-    overflow: hidden;
+  position: absolute;
+  top: 0px;
+  left: 0;
+  display: inline-block;
+  overflow: hidden;
+}
+.el-item__transform {
+  transform: scale(1.15);
 }
 .icon-hover:hover {
   font-size: 32px;
@@ -171,7 +222,6 @@ watch(
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  cursor: pointer;
 
   &.icon-view:before {
     content: "\e62d";
@@ -220,9 +270,10 @@ watch(
   display: flex;
   align-items: center;
   .el-rate__icon {
-  position: relative;
-  display: inline-block;
-}
+    position: relative;
+    display: inline-block;
+    transition: 0.3s;
+  }
   .show-text {
     margin-left: 12px;
     color: #1f2d3d;

@@ -1,9 +1,8 @@
 
 const toString = Object.prototype.toString
 
-export const is = <T = unknown>(val: T, str?: string) => {
-  console.log(typeof val)
-  return toString.call(val) === `[object ${typeof val}]`
+export const is = <T = unknown>(val: T, str: string) => {
+  return toString.call(val) === `[object ${str}]`
 }
 
 export const isNumber = (val: unknown): val is number => is(val, 'String')
@@ -72,4 +71,11 @@ export const isUrl = (path: string) => {
   // eslint-disable-next-line no-useless-escape
   const reg = /^http(s)?:\/\/([\w-]+\.)+[\w-]+(\/[\w- .\/?%&=]*)?/
   return reg.test(path)
+}
+
+export const hasClass = (element: HTMLDivElement, className: string) => {
+  if (element.classList) {
+    return element.classList.contains(className)
+  }
+  return new (RegExp as any)(`(^|)${className}(|$)`, 'gi').test(element.className)
 }
