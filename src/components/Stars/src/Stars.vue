@@ -27,7 +27,7 @@
       </i>
     </span>
     <span
-      v-if="showText || showScore"
+      v-if="showScore || showText"
       class="el-rate__text"
       :style="{ color: textColor }"
       >{{ text }}</span
@@ -48,12 +48,10 @@ const pointerAtLeftHalf = ref(true)
 const hoverIndex = ref(-1)
 
 const text = computed(() => {
-  if (props.showText) {
-    const texts = props.texts
-    return texts[Math.ceil(currentValue.value) - 1]
+  if (props.showScore) {
+    return props.scoreTemplate.replace('{value}', currentValue.value)
   }
-  const score = currentValue.value
-  return score
+  return props.texts[Math.ceil(currentValue.value) - 1]
 })
 const classes = computed(() => {
   const result = []
