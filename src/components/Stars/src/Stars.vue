@@ -3,7 +3,11 @@
     <span
       v-for="(item, index) in max"
       :key="index"
-      :class="['iconfont', 'el-rate__item', hoverIndex == item ? 'el-item__transform': '']"
+      :class="[
+        'iconfont',
+        'el-rate__item',
+        hoverIndex == item ? 'el-item__transform' : '',
+      ]"
       :style="{ cursor: rateDisabled ? 'auto' : 'pointer' }"
       @mousemove="setCurrentValue(item, $event)"
       @mouseleave="resetCurrentValue"
@@ -22,7 +26,12 @@
         </i>
       </i>
     </span>
-    <span class="el-rate__text">text</span>
+    <span
+      v-if="showText || showScore"
+      class="el-rate__text"
+      :style="{ color: textColor }"
+      >{{ text }}</span
+    >
   </div>
 </template>
 
@@ -37,6 +46,15 @@ const emits = defineEmits(Emits)
 const currentValue = ref(props.modelValue)
 const pointerAtLeftHalf = ref(true)
 const hoverIndex = ref(-1)
+
+const text = computed(() => {
+  if (props.showText) {
+    const texts = props.texts
+    return texts[Math.ceil(currentValue.value) - 1]
+  }
+  const score = currentValue.value
+  return score
+})
 const classes = computed(() => {
   const result = []
   let i = 0
@@ -201,7 +219,7 @@ watch(
       format("truetype");
 }
 .el-rate__item {
-    padding-right: 6px;
+  padding-right: 6px;
 }
 .el-rate__decimal {
   position: absolute;

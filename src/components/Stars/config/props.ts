@@ -48,7 +48,7 @@ export const basicProps = {
   },
   textColor: {
     type: String as PropType<string>,
-    default: '1f2d3d'
+    default: '#1F2D3D'
   },
   texts: {
     type: definePropType<string []>(Array),

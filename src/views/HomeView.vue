@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-   <Star v-model="starModel" size="28px" score-template="{value}分" allow-half text-color="#ff9900" show-text show-score @change="starChange"></Star>
+   <Star v-model="starModel" size="28px" score-template="{value}分" allow-half text-color="#ff9900" show-score @change="starChange"></Star>
   </div>
 </template>
 <script lang="ts" setup>

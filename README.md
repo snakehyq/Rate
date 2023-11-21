@@ -63,7 +63,7 @@ function starChange (num: number) {
 | show-score          | boolean                   | false                                    | 是否显示当前分数，show-score 和 show-text 不能同时为真       |
 | show-text           | boolean                   | false                                    | 是否显示辅助文字，若为真，则会从 texts 数组中选取当前分数对应的文字内容 |
 | texts               | array                     | ['极差', '失望', '一般', '满意', '惊喜'] | 辅助文字数组                                                 |
-| text-color          | string                    | \#1F2D3D                                 | 辅助文字的颜色                                               |
+| text-color          | string                    | #1F2D3D                                  | 辅助文字的颜色                                               |
 | disabled            | boolean                   | false                                    | 是否为只读                                                   |
 | icons               | Array<string> \|   Object | ['icon-star', 'icon-face', 'icon-love']  | 图标组件 若传入数组，则需要传入 3 个元素，分别为 3 个部分所对应的类名；若传入对象，则可自定义分段，键名为分段的界限值，键值为对应的类名,目前只支持一下的icon: 'icon-view'，'icon-taiji'，'icon-mok'，'icon-info'，'icon-shit'，'icon-lock'，'icon-map'，'icon-setting'，'icon-love'，‘icon-face’，'icon-star' |
 | void-icon           | string                    | 'icon-setting'                           | 未被选中的图标组件                                           |
